@@ -29,7 +29,28 @@ public class Main {
             String[] slices = stringList.get(i).split(" ");
             for(int j = 0; j < slices.length; j++)
             {
-                System.out.println(slices[j] + " : " +getType(slices[j]));
+                if(slices[j].startsWith("(") && slices[j].length() > 1)
+                {
+                    System.out.println(slices[j].substring(0,1)+" : Open Parentheses");
+                    System.out.println(slices[j].substring(1) + " : " +getType(slices[j].substring(1)));
+                }
+                else if(slices[j].endsWith(")"))
+                {
+                    if(getType(slices[j]).equals("Function ID"))
+                    {
+
+                    }
+                    else
+                    {
+                        System.out.println(slices[j].substring(0,1) + " : " +getType(slices[j].substring(0,1)));
+                        System.out.println(slices[j].substring(slices[j].length()-1) + ": Close Parentheses");
+                    }
+
+                }
+                else
+                {
+                    System.out.println(slices[j] + " : " +getType(slices[j]));
+                }
 
             }
         }
@@ -37,7 +58,7 @@ public class Main {
 
     public static String getType(String input)
     {
-        if(input.contains("()"))
+        if(input.matches("[A-Za-z]\\(\\)"))
         {
             return "Function ID";
         }
@@ -101,6 +122,52 @@ public class Main {
         {
             return "String literal";
         }
-        return "Test";
+        else if(input.equals("("))
+        {
+            return "Open Parentheses";
+        }
+
+        else if(input.equals(")"))
+        {
+            return "Close Parentheses";
+        }
+
+
+
+        else if(input.equals("print"))
+        {
+            return "Print Statement";
+        }
+
+        else if(input.equals("if"))
+        {
+            return "If Statement";
+        }
+
+        else if(input.equals("then"))
+        {
+            return "Then Statement";
+        }
+        else if(input.equals("else"))
+        {
+            return "Else Statement";
+        }
+        else if(input.equals("while"))
+        {
+            return "While Statement";
+        }
+        else if(input.equals("do"))
+        {
+            return "Do Statement";
+        }
+        else if(input.equals("repeat"))
+        {
+            return "Repeat Statement";
+        }
+        else if(input.equals("until"))
+        {
+            return "Until Statement";
+        }
+        return "Unknown Token";
     }
 }

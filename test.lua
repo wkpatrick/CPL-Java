@@ -1,6 +1,7 @@
 function a()
 b = 8777
+c = 0
 repeat
-print (a = a + b)
-until a > 96
+print (c = c + b)
+until c > 96
 end

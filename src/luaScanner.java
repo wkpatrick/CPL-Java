@@ -6,13 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by lynx on 3/23/17.
+ * William Patrick
+ * 
  */
 public class luaScanner {
 
     public luaScanner() {
     }
 
+    /**
+     *
+     * processFile prints the token of each lexeme in the test lua file supplied by the program.
+     * The method accomplishes this by reading the input file line by line, splicing the line into strings with a space as the delimiter, and passes it to getType().
+     * @param fileName the file name of the lua test program.
+     */
     public void processFile(String fileName) {
         List<String> stringList = new ArrayList<String>();
 
@@ -23,6 +30,7 @@ public class luaScanner {
                 stringList.add(line);
             }
         } catch (FileNotFoundException e) {
+            System.out.println("File not found!");
             e.printStackTrace();
 
         } catch (IOException e) {
@@ -32,6 +40,11 @@ public class luaScanner {
         for (int i = 0; i < stringList.size(); i++) {
             String[] slices = stringList.get(i).split(" ");
             for (int j = 0; j < slices.length; j++) {
+                /**
+                 * In case the test lua program does not have a space between parentheses and the content inside of them.\
+                 * It first prints that there is an open parentheses, and then prints the type of the character(s) after it.
+                 * In part two, this will be moved into the getType method to
+                 */
                 if (slices[j].startsWith("(") && slices[j].length() > 1) {
                     System.out.println(slices[j].substring(0, 1) + " : Open Parentheses");
                     System.out.println(slices[j].substring(1) + " : " + getType(slices[j].substring(1)));
@@ -51,6 +64,12 @@ public class luaScanner {
         }
     }
 
+    /**
+     * getType works by checking if the input string matches a regex pattern, or is the same as a string literal, and returns the relevant string.
+     *
+     * @param input the lexeme whose token is return
+     * @return a string representing the token of the input lexeme
+     */
     public String getType(String input) {
         if (input.matches("[A-Za-z]\\(\\)")) {
             return "Function ID";

@@ -7,7 +7,9 @@ import java.util.List;
 
 /**
  * William Patrick
- * 
+ * CS 4308 - Concepts of Programming Languages
+ * Course Project - Parser
+ * 3/27/2017
  */
 public class luaScanner {
 
@@ -15,13 +17,15 @@ public class luaScanner {
     }
 
     /**
-     *
      * processFile prints the token of each lexeme in the test lua file supplied by the program.
      * The method accomplishes this by reading the input file line by line, splicing the line into strings with a space as the delimiter, and passes it to getType().
+     *
      * @param fileName the file name of the lua test program.
      */
     public void processFile(String fileName) {
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
+        List<Token> tokenList = new ArrayList<>();
+        List<Statement> statementList = new ArrayList<>();
 
         try {
             String line;
@@ -70,25 +74,34 @@ public class luaScanner {
      * @param input the lexeme whose token is return
      * @return a string representing the token of the input lexeme
      */
-    public String getType(String input) {
+    public Token getType(String input) {
         if (input.matches("[A-Za-z]\\(\\)")) {
-            return "Function ID";
+            return new Token(TokenType.FUNC_ID, input);
+            //return "Function ID";
         } else if (input.equals("function")) {
-            return "Function Keyword";
+            return new Token(TokenType.FUNC_KEYWORD, input);
+            //return "Function Keyword";
         } else if (input.equals("end")) {
-            return "End Keyword";
+            return new Token(TokenType.END_KEYWORD, input);
+            //return "End Keyword";
         } else if (input.equals("=")) {
-            return "Assignment Operator";
+            return new Token(TokenType.ASSIGN_OP, input);
+            //return "Assignment Operator";
         } else if (input.equals("<=")) {
-            return "LE Operator";
+            return new Token(TokenType.LE_OP, input);
+            //return "LE Operator";
         } else if (input.equals("<")) {
-            return "LT Operator";
+            return new Token(TokenType.LT_OP, input);
+            //return "LT Operator";
         } else if (input.equals(">=")) {
-            return "GE Operator";
+            return new Token(TokenType.LE_OP, input);
+            //return "GE Operator";
         } else if (input.equals(">")) {
-            return "GT Operator";
+            return new Token(TokenType.LT_OP, input);
+            //return "GT Operator";
         } else if (input.equals("==")) {
-            return "EQ Operator";
+            return new Token(TokenType.EQ_OP, input);
+            //return "EQ Operator";
         } else if (input.equals("~=")) {
             return "NE Operator";
         } else if (input.equals("+")) {

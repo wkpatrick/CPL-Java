@@ -1,17 +1,21 @@
+import java.util.List;
+
 /**
  * William Patrick
  * CS 4308 - Concepts of Programming Languages
  * Course Project - Parser
- * 3/27/2017
+ * 4/10/2017
  */
 
 public class Main {
     public static void main(String[] args) {
 
-        Statement testSt = new Statement();
-        testSt.state = State.PRINT_STATE;
-
+        List<Statement> program;
         luaScanner test = new luaScanner();
-        test.processFile("test.lua"); //Can change to the file name of whatever test file you want to use.
+        luaParser test2 = new luaParser();
+
+        program = test.processFile("test.lua"); //Can change to the file name of whatever test file you want to use.
+        test2.parse(program);
+
     }
 }

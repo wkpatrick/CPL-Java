@@ -9,7 +9,7 @@ import java.util.List;
  * William Patrick
  * CS 4308 - Concepts of Programming Languages
  * Course Project - Parser
- * 3/27/2017
+ * 4/10/2017
  */
 public class luaScanner {
 
@@ -17,16 +17,17 @@ public class luaScanner {
     }
 
     /**
-     * processFile prints the token of each lexeme in the test lua file supplied by the program.
-     * The method accomplishes this by reading the input file line by line, splicing the line into strings with a space as the delimiter, and passes it to getType().
+     * processFile reads the file, and determines the tokens line by line.
      *
      * @param fileName the file name of the lua test program.
+     * @return a list of statements (which are a list of tokens) that are of the UNCHECKED type, which means a later function
+     * will determine what type of statement they are.
      */
-    public void processFile(String fileName) {
+    public List<Statement> processFile(String fileName) {
         List<String> stringList = new ArrayList<>();
-        List<Token> tokenList = new ArrayList<>();
-        List<Statement> statementList = new ArrayList<>();
+        List<Statement> program = new ArrayList<>();
 
+        //Read the file into a string
         try {
             String line;
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -41,7 +42,9 @@ public class luaScanner {
             e.printStackTrace();
         }
 
+
         for (int i = 0; i < stringList.size(); i++) {
+            List<Token> tokenList = new ArrayList<>();
             String[] slices = stringList.get(i).split(" ");
             for (int j = 0; j < slices.length; j++) {
                 /**
@@ -49,23 +52,43 @@ public class luaScanner {
                  * It first prints that there is an open parentheses, and then prints the type of the character(s) after it.
                  * In part two, this will be moved into the getType method to
                  */
-                if (slices[j].startsWith("(") && slices[j].length() > 1) {
-                    System.out.println(slices[j].substring(0, 1) + " : Open Parentheses");
-                    System.out.println(slices[j].substring(1) + " : " + getType(slices[j].substring(1)));
-                } else if (slices[j].endsWith(")")) {
-                    if (getType(slices[j]).equals("Function ID")) {
 
-                    } else {
-                        System.out.println(slices[j].substring(0, 1) + " : " + getType(slices[j].substring(0, 1)));
-                        System.out.println(slices[j].substring(slices[j].length() - 1) + ": Close Parentheses");
+                //if its an open paren and something else without a space ex (a
+                if (slices[j].startsWith("(") && slices[j].length() > 1) {
+                    tokenList.add(new Token(TokenType.OP_PAREN, "("));
+                    tokenList.add(getType(slices[j].substring(1)));
+
+                } else if (slices[j].endsWith(")") && slices[j].length() > 1) {
+                    if (getType(slices[j]).getType().equals(TokenType.FUNC_ID)) {
+                        tokenList.add(getType(slices[j]));
+
+                    } else if (slices[j].endsWith("()")) {
                     }
 
+                    //In case its a closed paren and something without a space between the two eg b)
+                    else {
+                        if (slices[j].length() == 2) {
+                            tokenList.add(getType(String.valueOf(slices[j].charAt(0))));
+                            tokenList.add(new Token(TokenType.CL_PAREN, ")"));
+                        }
+                        //In case its something like var)
+                        else {
+                            tokenList.add(getType(slices[j].substring(0, slices[j].length() - 2)));
+                            tokenList.add(new Token(TokenType.CL_PAREN, ")"));
+                        }
+                    }
                 } else {
-                    System.out.println(slices[j] + " : " + getType(slices[j]));
+                    tokenList.add(getType(slices[j]));
                 }
-
             }
+
+            Statement insState = new Statement();
+            insState.line = tokenList;
+            insState.state = State.UNCHECKED;
+            program.add(insState);
         }
+
+        return program;
     }
 
     /**
@@ -77,66 +100,57 @@ public class luaScanner {
     public Token getType(String input) {
         if (input.matches("[A-Za-z]\\(\\)")) {
             return new Token(TokenType.FUNC_ID, input);
-            //return "Function ID";
         } else if (input.equals("function")) {
             return new Token(TokenType.FUNC_KEYWORD, input);
-            //return "Function Keyword";
         } else if (input.equals("end")) {
             return new Token(TokenType.END_KEYWORD, input);
-            //return "End Keyword";
         } else if (input.equals("=")) {
             return new Token(TokenType.ASSIGN_OP, input);
-            //return "Assignment Operator";
         } else if (input.equals("<=")) {
             return new Token(TokenType.LE_OP, input);
-            //return "LE Operator";
         } else if (input.equals("<")) {
             return new Token(TokenType.LT_OP, input);
-            //return "LT Operator";
         } else if (input.equals(">=")) {
-            return new Token(TokenType.LE_OP, input);
-            //return "GE Operator";
+            return new Token(TokenType.GE_OP, input);
         } else if (input.equals(">")) {
-            return new Token(TokenType.LT_OP, input);
-            //return "GT Operator";
+            return new Token(TokenType.GT_OP, input);
         } else if (input.equals("==")) {
             return new Token(TokenType.EQ_OP, input);
-            //return "EQ Operator";
         } else if (input.equals("~=")) {
-            return "NE Operator";
+            return new Token(TokenType.NE_OP, input);
         } else if (input.equals("+")) {
-            return "Add Operator";
+            return new Token(TokenType.ADD_OP, input);
         } else if (input.equals("-")) {
-            return "Sub Operator";
+            return new Token(TokenType.SUB_OP, input);
         } else if (input.equals("*")) {
-            return "Mult Operator";
+            return new Token(TokenType.MULT_OP, input);
         } else if (input.equals("/")) {
-            return "Div Operator";
+            return new Token(TokenType.DIV_OP, input);
         } else if (input.matches("\\d+")) {
-            return "Int Literal";
+            return new Token(TokenType.INT_LIT, input);
         } else if (input.matches("[A-Za-z]")) {
-            return "String literal";
+            return new Token(TokenType.STRING_LIT, input);
         } else if (input.equals("(")) {
-            return "Open Parentheses";
+            return new Token(TokenType.OP_PAREN, input);
         } else if (input.equals(")")) {
-            return "Close Parentheses";
+            return new Token(TokenType.CL_PAREN, input);
         } else if (input.equals("print")) {
-            return "Print Statement";
+            return new Token(TokenType.PRINT_STATE_BEGIN, input);
         } else if (input.equals("if")) {
-            return "If Statement";
+            return new Token(TokenType.IF_STATE_BEGIN, input);
         } else if (input.equals("then")) {
-            return "Then Statement";
+            return new Token(TokenType.THEN_STATE, input);
         } else if (input.equals("else")) {
-            return "Else Statement";
+            return new Token(TokenType.ELSE_STATE, input);
         } else if (input.equals("while")) {
-            return "While Statement";
+            return new Token(TokenType.WHILE_STATE, input);
         } else if (input.equals("do")) {
-            return "Do Statement";
+            return new Token(TokenType.DO_STATE, input);
         } else if (input.equals("repeat")) {
-            return "Repeat Statement";
+            return new Token(TokenType.REPEAT_STATE, input);
         } else if (input.equals("until")) {
-            return "Until Statement";
+            return new Token(TokenType.UNTIL_STATE, input);
         }
-        return "Unknown Token";
+        return new Token(TokenType.UNKNOWN, input);
     }
 }

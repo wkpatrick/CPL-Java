@@ -2,8 +2,7 @@
  * William Patrick
  * CS 4308 - Concepts of Programming Languages
  * Course Project - Parser
- * 3/27/2017
- *
+ * 4/10/2017
  */
 enum TokenType
 {
@@ -34,5 +33,9 @@ public class Token {
 
     public void setLexeme(String lexeme) {
         this.lexeme = lexeme;
+    }
+
+    public String toString() {
+        return "Lexeme: " + this.lexeme + " Token: " + this.type.toString();
     }
 }

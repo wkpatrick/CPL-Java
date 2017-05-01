@@ -30,6 +30,7 @@ public class luaParser {
         for (int i = 0; i < program.size(); i++) {
             statementArray[i] = program.get(i);
         }
+
         for (Statement line : statementArray) {
             Token[] sentence = new Token[line.line.size()];
             for (int i = 0; i < line.line.size(); i++) {
@@ -51,6 +52,8 @@ public class luaParser {
             switch (line[i].getType()) {
                 case PRINT_STATE_BEGIN:
                     printline("\tPrint Statement at token number: " + i + 1);
+                    Statement inputLine = new Statement(State.PRINT_STATE);
+                    List<Token> tokenLine;
                     break;
                 case ADD_OP:
                 case SUB_OP:

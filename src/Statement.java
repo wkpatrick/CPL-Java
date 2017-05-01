@@ -11,11 +11,20 @@ enum State {
 }
 
 public class Statement {
-    State state;
-    List<Token> line;
+    public State state;
+    public List<Token> line;
 
     public Statement() {
         this.state = State.EMPTY;
+    }
+
+    public Statement(State state) {
+        this.state = state;
+    }
+
+    public Statement(State state, List<Token> line) {
+        this.state = state;
+        this.line = line;
     }
 
     public String toString() {

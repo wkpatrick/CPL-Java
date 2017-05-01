@@ -12,6 +12,7 @@ public class luaParser {
     //The States array is for keeping track of opening and closing of the 3 different flow statements, any time one is opened, its spot in the array is incremented
     //and the parser decrements and makes sure it isnt negative, and if it is it exits.
     public int[] states = new int[3]; // 0 is if statements, 1 is repeat statements 2 is Do/While statements
+    public List<Statement> program;
 
     public luaParser() {
     }
@@ -23,12 +24,13 @@ public class luaParser {
     public void parse(List<Statement> program) {
 
         printline("Each line's tokens start at 1, and each token is delimted with a | ");
+
         //Each statement is a line, we need turn each line into an array of tokens and recursively parse it
-        Statement[] stateArray = new Statement[program.size()];
+        Statement[] statementArray = new Statement[program.size()];
         for (int i = 0; i < program.size(); i++) {
-            stateArray[i] = program.get(i);
+            statementArray[i] = program.get(i);
         }
-        for (Statement line : stateArray) {
+        for (Statement line : statementArray) {
             Token[] sentence = new Token[line.line.size()];
             for (int i = 0; i < line.line.size(); i++) {
                 sentence[i] = line.line.get(i);
@@ -40,7 +42,7 @@ public class luaParser {
     }
 
     /**
-     * Parsers the line of tokens provided, and prints out the statements within. It also checks there are enough opening and closing statements.
+     * Parses the line of tokens provided, and prints out the statements within. It also checks there are enough opening and closing statements.
      *
      * @param line the input line of tokens, an array because its easier to look ahead and behind compared to a list.
      */
@@ -65,7 +67,6 @@ public class luaParser {
                 case NE_OP:
                     printline("\tComparison statement at token number: " + i);
                     printline("\tStatement: " + getLexemesOfRange(line, i - 1, getPosOfNextLiteral(line, i)));
-
                     break;
                 case IF_STATE_BEGIN:
                     printline("\tIf statement at token number: " + i + 1);
@@ -129,7 +130,6 @@ public class luaParser {
     }
 
     /**
-     * (
      *
      * @param line  the line we are currently working on
      * @param start where the statement starts, we work to find the next literal after that positon.

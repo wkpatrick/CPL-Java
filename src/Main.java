@@ -13,9 +13,9 @@ public class Main {
         List<Statement> program;
         luaScanner test = new luaScanner();
         luaParser test2 = new luaParser();
+        luaInterpreter test3 = new luaInterpreter();
 
         program = test.processFile("test.lua"); //Can change to the file name of whatever test file you want to use.
         test2.parse(program);
-
     }
 }

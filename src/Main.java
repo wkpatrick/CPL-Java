@@ -16,6 +16,7 @@ public class Main {
         luaInterpreter test3 = new luaInterpreter();
 
         program = test.processFile("test.lua"); //Can change to the file name of whatever test file you want to use.
-        test2.parse(program);
+       // test2.parse(program);
+        test3.execute(program);
     }
 }

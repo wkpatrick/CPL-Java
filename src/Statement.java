@@ -12,7 +12,12 @@ enum State {
 
 public class Statement {
     public State state;
+    /**
+     * A statement can either be a list of tokens, (ex print(a)) or a list of tokens and then a line (print(a+b))
+     */
     public List<Token> line;
+    public Statement inside;
+
 
     public Statement() {
         this.state = State.EMPTY;

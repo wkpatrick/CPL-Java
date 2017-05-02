@@ -54,7 +54,11 @@ public class luaScanner {
                  */
 
                 //if its an open paren and something else without a space ex (a
-                if (slices[j].startsWith("(") && slices[j].length() > 1) {
+                if (slices[j].startsWith("(") && slices[j].endsWith(")")) {
+                    tokenList.add(new Token(TokenType.OP_PAREN, "("));
+                    tokenList.add(getType(slices[j].substring(1, 2)));
+                    tokenList.add(new Token(TokenType.CL_PAREN, ")"));
+                } else if (slices[j].startsWith("(") && slices[j].length() > 1) {
                     tokenList.add(new Token(TokenType.OP_PAREN, "("));
                     tokenList.add(getType(slices[j].substring(1)));
 
@@ -63,6 +67,8 @@ public class luaScanner {
                         tokenList.add(getType(slices[j]));
 
                     } else if (slices[j].endsWith("()")) {
+
+
                     }
 
                     //In case its a closed paren and something without a space between the two eg b)
